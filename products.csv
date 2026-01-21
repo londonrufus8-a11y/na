@@ -1,6 +1,7 @@
 ProductID,ProductName,Category,Brand,Price,Stock,ImageURL,DiscountPrice
-CA001,Wireless Mouse,computer,Logitech,8500,15,New folder/DF PLUS BLUE MOUTH CHARGER.jpg,7000
+CA001,Wireless Mouse,computer,Logitech,8500,15,https://github.com/londonrufus8-a11y/na/blob/53800ce6e652b1f7d648a8d4badfd12ed411be0d/New%20folder/DF%20PLUS%20WIRELESS%20RECHARGEABLE%20MOUSE.jpg,7000
 CA002,USB Keyboard,computer,HP,12000,10,https://via.placeholder.com/300,
 PA001,Fast Charging Cable,phone,Baseus,4500,25,https://via.placeholder.com/300,3800
 PA002,Power Bank 20000mAh,phone,Oraimo,35000,8,https://via.placeholder.com/300,0
+
 
