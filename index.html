@@ -10,48 +10,31 @@ body { font-family: Arial, sans-serif; margin:0; background:#f8fafc; }
 header { background:#0f172a; color:#fff; padding:1rem; text-align:center; }
 .controls { display:flex; gap:8px; padding:10px; background:#fff; position:sticky; top:0; z-index:10; }
 .controls input, .controls select { padding:8px; flex:1; border-radius:6px; border:1px solid #cbd5e1; }
-.catalog { padding:1rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
-.product { background:#fff; border-radius:12px; padding:10px; box-shadow:0 6px 16px rgba(0,0,0,.08); display:flex; flex-direction:column; }
-.product img { width:100%; height:150px; object-fit:cover; border-radius:10px; }
+.catalog { padding:1rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; transition: all 0.4s ease; }
+.product { background:#fff; border-radius:12px; padding:10px; box-shadow:0 6px 16px rgba(0,0,0,.08); display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.product:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+.product img { width:100%; height:150px; object-fit:cover; border-radius:10px; transition: transform 0.3s ease; }
+.product:hover img { transform: scale(1.05); }
 .product h3 { margin:6px 0; font-size:1.05rem; }
 .meta { font-size:.8rem; color:#64748b; }
 .price { margin:6px 0; }
 .qty-box { display:flex; align-items:center; gap:6px; margin:6px 0; }
-.qty-box button { padding:4px 8px; }
-.btn { background:#25d366; color:#fff; padding:8px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
-.cart-btn { position:fixed; bottom:20px; right:20px; background:#0f172a; color:#fff; padding:12px 16px; border-radius:40px; border:none; z-index:100; }
+.qty-box button { padding:4px 8px; cursor:pointer; }
+.btn { background:#25d366; color:#fff; padding:8px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition: transform 0.2s ease, background 0.2s ease; }
+.btn:hover { transform: translateY(-2px); background: #20b858; }
+.cart-btn { position:fixed; bottom:20px; right:20px; background:#0f172a; color:#fff; padding:12px 16px; border-radius:40px; border:none; z-index:100; transition: transform 0.2s ease, background 0.2s ease; }
+.cart-btn:hover { transform: translateY(-2px); background:#131b33; }
 
 /* CART SIDEBAR */
-#cartSidebar {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 350px;
-  height: 100%;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(8px);
-  box-shadow: -4px 0 12px rgba(0,0,0,0.3);
-  z-index: 1000;
-  transition: right 0.3s ease;
-  overflow-y: auto;
-  padding: 1rem;
-  border-left: 1px solid #cbd5e1;
-}
+#cartSidebar { position: fixed; top: 0; right: -400px; width: 350px; height: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); box-shadow: -4px 0 12px rgba(0,0,0,0.3); z-index: 1000; transition: right 0.3s ease; overflow-y: auto; padding: 1rem; border-left: 1px solid #cbd5e1; }
 #cartSidebar.open { right: 0; }
 #cartBox h3 { margin-top: 0; }
 
 /* BACKDROP */
-#cartBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.2);
-  backdrop-filter: blur(2px);
-  z-index: 900;
-  display: none;
-}
+#cartBackdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 900; display: none; }
 #cartSidebar.open + #cartBackdrop { display: block; }
 
-/* MOBILE RESPONSIVE CART & BUTTONS */
+/* MOBILE */
 @media screen and (max-width: 600px) {
   #cartSidebar { width: 100%; right: -100%; }
   #cartSidebar.open { right: 0; }
@@ -62,52 +45,27 @@ header { background:#0f172a; color:#fff; padding:1rem; text-align:center; }
   .cart-btn { padding: 16px 20px; font-size: 1.1rem; }
 }
 
-/* FLY TO CART ANIMATION */
-.fly-img {
-  position: fixed;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 10px;
-  z-index: 2000;
-  pointer-events: none;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s;
-}
+/* FLY TO CART */
+.fly-img { position: fixed; width: 150px; height: 150px; object-fit: cover; border-radius: 10px; z-index: 2000; pointer-events: none; transition: transform 0.8s cubic-bezier(0.4,0,0.2,1), opacity 0.8s; }
 
 /* CART COUNT ANIMATION */
-#cartCount.animate {
-  transform: scale(1.5);
-  color: #25d366;
-  transition: transform 0.3s ease, color 0.3s ease;
-}
+#cartCount.animate { transform: scale(1.5); color: #25d366; transition: transform 0.3s ease, color 0.3s ease; }
 
 /* ROW VIEW */
 .catalog.row { display: flex; flex-direction: column; gap: 10px; }
-.catalog.row .product {
-  display: flex; flex-direction: row; gap: 12px; align-items: center; height: 120px;
-}
+.catalog.row .product { display: flex; flex-direction: row; gap: 12px; align-items: center; height: 120px; }
 .catalog.row .product img { width: 120px; height: 100%; object-fit: cover; border-radius: 10px; }
 .catalog.row .product h3 { font-size: 1rem; margin:0; }
 .catalog.row .product .meta, .catalog.row .product .price, .catalog.row .product .qty-box, .catalog.row .product .btn { margin:2px 0; }
 
-/* BACK TO TOP BUTTON */
-#backToTop {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  background: #0f172a;
-  color: #fff;
-  border: none;
-  border-radius: 50px;
-  padding: 10px 16px;
-  cursor: pointer;
-  z-index: 150;
-  opacity: 0.7;
-  transition: opacity 0.3s;
-}
-#backToTop:hover { opacity: 1; }
+/* BACK TO TOP */
+#backToTop { position: fixed; bottom: 80px; right: 20px; background: #0f172a; color: #fff; border: none; border-radius: 50px; padding: 10px 16px; cursor: pointer; z-index: 150; opacity: 0.7; transition: transform 0.2s ease, background 0.2s ease, opacity 0.3s; }
+#backToTop:hover { transform: translateY(-2px); background: #131b33; opacity:1; }
 #backToTop.hidden { display: none; }
 
+/* TOAST NOTIFICATION */
+#toast { position: fixed; bottom: 140px; right: 20px; background: #25d366; color:#fff; padding:12px 20px; border-radius: 8px; z-index:200; opacity:0; pointer-events:none; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(20px); }
+#toast.show { opacity:1; transform: translateY(0); }
 </style>
 </head>
 
@@ -131,11 +89,9 @@ header { background:#0f172a; color:#fff; padding:1rem; text-align:center; }
 
 <section id="catalog" class="catalog"></section>
 
-<button class="cart-btn" onclick="openCart()">
-🛒 Cart (<span id="cartCount">0</span>)
-</button>
-
+<button class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
 <button id="backToTop" onclick="scrollToTop()">⬆ Back to Top</button>
+<div id="toast">Added to cart!</div>
 
 <!-- CART SIDEBAR -->
 <div id="cartSidebar">
@@ -143,22 +99,11 @@ header { background:#0f172a; color:#fff; padding:1rem; text-align:center; }
     <h3>Your Cart</h3>
     <div id="cartItems"></div>
     <p id="cartTotal"></p>
-
-    <button id="checkoutBtn" class="btn" onclick="checkoutWhatsApp()">
-      Checkout on WhatsApp
-    </button>
-
-    <button onclick="continueShopping()" style="width:100%;">
-      Continue Shopping
-    </button>
-
-    <button onclick="closeCart()" style="width:100%;">
-      Close
-    </button>
+    <button id="checkoutBtn" class="btn" onclick="checkoutWhatsApp()">Checkout on WhatsApp</button>
+    <button onclick="continueShopping()" style="width:100%;">Continue Shopping</button>
+    <button onclick="closeCart()" style="width:100%;">Close</button>
   </div>
 </div>
-
-<!-- BACKDROP -->
 <div id="cartBackdrop" onclick="closeCart()"></div>
 
 <script>
@@ -171,15 +116,10 @@ let cart = [];
 let productQty = {};
 
 function saveCart(){ localStorage.setItem("df_cart", JSON.stringify(cart)); }
-function loadCart(){
-  const saved = localStorage.getItem("df_cart");
-  if(saved){ cart = JSON.parse(saved); cartCount.innerText = cart.length; }
-}
+function loadCart(){ const saved = localStorage.getItem("df_cart"); if(saved){ cart = JSON.parse(saved); cartCount.innerText = cart.length; } }
 function clearCart(){ cart=[]; localStorage.removeItem("df_cart"); cartCount.innerText=0; }
 
-fetch(csvURL)
-.then(r=>r.text())
-.then(data=>{
+fetch(csvURL).then(r=>r.text()).then(data=>{
   data.trim().split("\n").slice(1).forEach((r,idx)=>{
     const [id,name,category,brand,price,stock,image,discount]=r.split(",");
     products.push({name,category,brand,price:Number(price),discount:Number(discount)||0,image});
@@ -212,121 +152,82 @@ function displayProducts(list){
   });
 }
 
-function filterProducts(){
-  const s=search.value.toLowerCase();
-  const c=category.value;
-  displayProducts(products.filter(p=>p.name.toLowerCase().includes(s)&&(c==="all"||p.category===c)));
-}
+function filterProducts(){ const s=search.value.toLowerCase(); const c=category.value; displayProducts(products.filter(p=>p.name.toLowerCase().includes(s)&&(c==="all"||p.category===c))); }
+function changeProductQty(index,delta){ productQty[index]+=delta; if(productQty[index]<1) productQty[index]=1; document.getElementById(`qty-${index}`).innerText=productQty[index]; }
 
-function changeProductQty(index,delta){
-  productQty[index]+=delta;
-  if(productQty[index]<1) productQty[index]=1;
-  document.getElementById(`qty-${index}`).innerText=productQty[index];
+function showToast(msg="Added to cart!"){
+  const t=document.getElementById('toast');
+  t.innerText=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1500);
 }
 
 function addProductWithQty(name, price, index){
   const qty = productQty[index];
   const item = cart.find(i => i.name === name);
-  if(item) item.qty += qty;
-  else cart.push({name, price, qty});
+  if(item) item.qty += qty; else cart.push({name, price, qty});
   cartCount.innerText = cart.length;
 
-  // Animate cart count
   cartCount.classList.add('animate');
-  setTimeout(() => cartCount.classList.remove('animate'), 300);
+  setTimeout(()=>cartCount.classList.remove('animate'),300);
 
-  productQty[index] = 1;
-  document.getElementById(`qty-${index}`).innerText = 1;
+  productQty[index]=1; document.getElementById(`qty-${index}`).innerText=1;
   saveCart();
+  showToast();
 
-  // FLY TO CART ANIMATION
-  const productCard = document.querySelectorAll('.product')[index];
-  const img = productCard.querySelector('img');
-  const imgRect = img.getBoundingClientRect();
-  const cartBtn = document.querySelector('.cart-btn');
-  const cartRect = cartBtn.getBoundingClientRect();
+  const productCard=document.querySelectorAll('.product')[index];
+  const img=productCard.querySelector('img');
+  const imgRect=img.getBoundingClientRect();
+  const cartBtn=document.querySelector('.cart-btn');
+  const cartRect=cartBtn.getBoundingClientRect();
 
-  const flyImg = img.cloneNode(true);
+  const flyImg=img.cloneNode(true);
   flyImg.classList.add('fly-img');
-  flyImg.style.left = imgRect.left + 'px';
-  flyImg.style.top = imgRect.top + 'px';
+  flyImg.style.left=imgRect.left+'px';
+  flyImg.style.top=imgRect.top+'px';
   document.body.appendChild(flyImg);
 
-  const dx = cartRect.left + cartRect.width/2 - imgRect.left - imgRect.width/2;
-  const dy = cartRect.top + cartRect.height/2 - imgRect.top - imgRect.height/2;
+  const dx=cartRect.left+cartRect.width/2-imgRect.left-imgRect.width/2;
+  const dy=cartRect.top+cartRect.height/2-imgRect.top-imgRect.height/2;
 
-  requestAnimationFrame(() => {
-    flyImg.style.transform = `translate(${dx}px, ${dy}px) scale(0.1)`;
-    flyImg.style.opacity = '0';
-  });
-
-  flyImg.addEventListener('transitionend', () => flyImg.remove());
+  requestAnimationFrame(()=>{ flyImg.style.transform=`translate(${dx}px,${dy}px) scale(0.1)`; flyImg.style.opacity='0'; });
+  flyImg.addEventListener('transitionend',()=>flyImg.remove());
 }
 
 /* CART FUNCTIONS */
 function openCart(){
   document.getElementById("cartSidebar").classList.add("open");
   let html="", subtotal=0;
-  cart.forEach((i,idx)=>{
-    const t=i.price*i.qty;
-    subtotal+=t;
-    html+=`<p><b>${i.name}</b><br>₦${i.price} × <button onclick="changeQty(${idx},-1)">➖</button> ${i.qty} <button onclick="changeQty(${idx},1)">➕</button> = ₦${t} <button onclick="removeItem(${idx})">❌</button></p>`;
-  });
+  cart.forEach((i,idx)=>{ const t=i.price*i.qty; subtotal+=t; html+=`<p><b>${i.name}</b><br>₦${i.price} × <button onclick="changeQty(${idx},-1)">➖</button> ${i.qty} <button onclick="changeQty(${idx},1)">➕</button> = ₦${t} <button onclick="removeItem(${idx})">❌</button></p>`; });
   const total=cart.length?subtotal+DELIVERY_FEE:0;
   cartItems.innerHTML=html||"<p>Your cart is empty</p>";
   cartTotal.innerHTML=`Subtotal: ₦${subtotal}<br>Delivery: ₦${cart.length?DELIVERY_FEE:0}<br><b>Total: ₦${total}</b>`;
-  saveCart();
-  toggleCheckout();
+  saveCart(); toggleCheckout();
 }
-function changeQty(index,delta){
-  cart[index].qty+=delta;
-  if(cart[index].qty<=0) cart.splice(index,1);
-  cartCount.innerText=cart.length;
-  saveCart();
-  openCart();
-}
-function removeItem(index){
-  cart.splice(index,1);
-  cartCount.innerText=cart.length;
-  saveCart();
-  openCart();
-}
+function changeQty(index,delta){ cart[index].qty+=delta; if(cart[index].qty<=0) cart.splice(index,1); cartCount.innerText=cart.length; saveCart(); openCart(); }
+function removeItem(index){ cart.splice(index,1); cartCount.innerText=cart.length; saveCart(); openCart(); }
 function closeCart(){ document.getElementById("cartSidebar").classList.remove("open"); }
 function continueShopping(){ closeCart(); catalog.scrollIntoView({behavior:"smooth"}); }
-function toggleCheckout(){
-  checkoutBtn.disabled=cart.length===0;
-  checkoutBtn.style.opacity=cart.length===0?"0.5":"1";
-}
+function toggleCheckout(){ checkoutBtn.disabled=cart.length===0; checkoutBtn.style.opacity=cart.length===0?"0.5":"1"; }
 
 function checkoutWhatsApp(){
   if(cart.length===0) return;
   const orderID="DF-"+Date.now();
   let msg=`Hello, I want to order.%0AOrder Ref: ${orderID}%0A%0A`;
   let subtotal=0;
-  cart.forEach((i,n)=>{
-    const t=i.price*i.qty;
-    subtotal+=t;
-    msg+=`${n+1}. ${i.name} (x${i.qty}) – ₦${t}%0A`;
-  });
+  cart.forEach((i,n)=>{ const t=i.price*i.qty; subtotal+=t; msg+=`${n+1}. ${i.name} (x${i.qty}) – ₦${t}%0A`; });
   const total=subtotal+DELIVERY_FEE;
-  msg+=`%0ASubtotal: ₦${subtotal}`;
-  msg+=`%0ADelivery: ₦${DELIVERY_FEE}`;
-  msg+=`%0ATOTAL: ₦${total}`;
+  msg+=`%0ASubtotal: ₦${subtotal}%0ADelivery: ₦${DELIVERY_FEE}%0ATOTAL: ₦${total}`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`,"_blank");
-  clearCart();
-  closeCart();
+  clearCart(); closeCart();
 }
 
-// Toggle Row/Grid view
+// Toggle Row/Grid
 function toggleRowView(){ catalog.classList.toggle('row'); }
 
 // Back to top
-const backBtn = document.getElementById('backToTop');
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 300) backBtn.classList.remove('hidden');
-  else backBtn.classList.add('hidden');
-});
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+const backBtn=document.getElementById('backToTop');
+window.addEventListener('scroll',()=>{ if(window.scrollY>300) backBtn.classList.remove('hidden'); else backBtn.classList.add('hidden'); });
+function scrollToTop(){ window.scrollTo({ top:0, behavior:'smooth' }); }
 backBtn.classList.add('hidden');
 
 window.onload=()=>{ loadCart(); toggleCheckout(); };
