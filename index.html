@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DF Plus Accessories</title>
+
+<style>
+body { font-family: Arial, sans-serif; margin:0; background:#f8fafc; }
+header { background:#0f172a; color:#fff; padding:1rem; text-align:center; }
+.controls { display:flex; gap:8px; padding:10px; background:#fff; position:sticky; top:0; z-index:10; }
+.controls input, .controls select { padding:8px; flex:1; border-radius:6px; border:1px solid #cbd5e1; }
+.catalog { padding:1rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+.product { background:#fff; border-radius:12px; padding:10px; box-shadow:0 6px 16px rgba(0,0,0,.08); display:flex; flex-direction:column; }
+.product img { width:100%; height:150px; object-fit:cover; border-radius:10px; }
+.product h3 { margin:6px 0; font-size:1.05rem; }
+.meta { font-size:.8rem; color:#64748b; }
+.price { margin:6px 0; }
+.btn { background:#25d366; color:#fff; padding:8px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+.cart-btn { position:fixed; bottom:20px; right:20px; background:#0f172a; color:#fff; padding:12px 16px; border-radius:40px; border:none; }
+#cartModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); }
+#cartBox { background:#fff; max-width:420px; margin:8% auto; padding:1rem; border-radius:12px; }
+#cartBox button { margin-top:6px; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>DF Plus Accessories</h2>
+  <p>Computer & Phone Accessories</p>
+</header>
+
+<div class="controls">
+  <input id="search" placeholder="Search products..." onkeyup="filterProducts()">
+  <select id="category" onchange="filterProducts()">
+    <option value="all">All</option>
+    <option value="computer">Computer</option>
+    <option value="phone">Phone</option>
+  </select>
+</div>
+
+<section id="catalog" class="catalog"></section>
+
+<button class="cart-btn" onclick="openCart()">
+🛒 Cart (<span id="cartCount">0</span>)
+</button>
+
+<div id="cartModal">
+  <div id="cartBox">
+    <h3>Your Cart</h3>
+    <div id="cartItems"></div>
+    <p id="cartTotal"></p>
+
+    <button id="checkoutBtn" class="btn" onclick="checkoutWhatsApp()">
+      Checkout on WhatsApp
+    </button>
+
+    <button onclick="continueShopping()" style="width:100%;">
+      Continue Shopping
+    </button>
+
+    <button onclick="closeCart()" style="width:100%;">
+      Close
+    </button>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const csvURL = "products.csv"; 
+// OR Google Drive:
+// https://drive.google.com/uc?export=download&id=FILE_ID
+
+const WHATSAPP_NUMBER = "2348012345678";
+const DELIVERY_FEE = 2500;
+/* ========================================= */
+
+let products = [];
+let cart = [];
+
+/* ===== CART STORAGE ===== */
+function saveCart() {
+  localStorage.setItem("df_cart", JSON.stringify(cart));
+}
+function loadCart() {
+  const saved = localStorage.getItem("df_cart");
+  if (saved) {
+    cart = JSON.parse(saved);
+    cartCount.innerText = cart.length;
+  }
+}
+function clearCart() {
+  cart = [];
+  localStorage.removeItem("df_cart");
+  cartCount.innerText = 0;
+}
+
+/* FETCH CSV */
+fetch(csvURL)
+.then(res => res.text())
+.then(data => {
+  const rows = data.trim().split("\n").slice(1);
+  rows.forEach(r => {
+    const [id,name,category,brand,price,stock,image,discount] = r.split(",");
+    products.push({
+      name,
+      category,
+      brand,
+      price:Number(price),
+      discount:Number(discount)||0,
+      image
+    });
+  });
+  displayProducts(products);
+});
+
+/* DISPLAY PRODUCTS */
+function displayProducts(list){
+  catalog.innerHTML = "";
+  list.forEach(p=>{
+    const finalPrice = p.discount > 0 ? p.discount : p.price;
+    const priceHTML = p.discount > 0
+      ? `<div class="price">
+           <span style="text-decoration:line-through;color:#94a3b8;">₦${p.price}</span>
+           <span style="color:#dc2626;font-weight:bold;margin-left:6px;">₦${p.discount}</span>
+         </div>`
+      : `<div class="price"><b>₦${p.price}</b></div>`;
+
+    catalog.innerHTML += `
+    <div class="product">
+      <img src="${p.image}">
+      <h3>${p.name}</h3>
+      <div class="meta">${p.brand} • ${p.category}</div>
+      ${priceHTML}
+      <button class="btn" onclick="addToCart('${p.name}',${finalPrice})">
+        Add to Cart
+      </button>
+    </div>`;
+  });
+}
+
+/* FILTER */
+function filterProducts(){
+  const s = search.value.toLowerCase();
+  const c = category.value;
+  displayProducts(products.filter(p =>
+    p.name.toLowerCase().includes(s) &&
+    (c==="all" || p.category===c)
+  ));
+}
+
+/* CART ACTIONS */
+function addToCart(name,price){
+  const item = cart.find(i=>i.name===name);
+  if(item) item.qty++;
+  else cart.push({name,price,qty:1});
+  cartCount.innerText = cart.length;
+  saveCart();
+}
+
+function openCart(){
+  cartModal.style.display="block";
+  let html="", subtotal=0;
+
+  cart.forEach((i,index)=>{
+    const itemTotal = i.price*i.qty;
+    subtotal+=itemTotal;
+    html+=`
+      <p>
+        <b>${i.name}</b><br>
+        ₦${i.price} × 
+        <button onclick="changeQty(${index},-1)">➖</button>
+        ${i.qty}
+        <button onclick="changeQty(${index},1)">➕</button>
+        = ₦${itemTotal}
+        <button onclick="removeItem(${index})">❌</button>
+      </p>`;
+  });
+
+  const total = cart.length ? subtotal + DELIVERY_FEE : 0;
+
+  cartItems.innerHTML = html || "<p>Your cart is empty</p>";
+  cartTotal.innerHTML = `
+    Subtotal: ₦${subtotal}<br>
+    Delivery: ₦${cart.length ? DELIVERY_FEE : 0}<br>
+    <b>Total: ₦${total}</b>
+  `;
+
+  saveCart();
+  toggleCheckout();
+}
+
+function changeQty(index,delta){
+  cart[index].qty+=delta;
+  if(cart[index].qty<=0) cart.splice(index,1);
+  cartCount.innerText=cart.length;
+  saveCart();
+  openCart();
+}
+
+function removeItem(index){
+  cart.splice(index,1);
+  cartCount.innerText=cart.length;
+  saveCart();
+  openCart();
+}
+
+function closeCart(){
+  cartModal.style.display="none";
+}
+
+function continueShopping(){
+  closeCart();
+  catalog.scrollIntoView({behavior:"smooth"});
+}
+
+function toggleCheckout(){
+  checkoutBtn.disabled = cart.length===0;
+  checkoutBtn.style.opacity = cart.length===0 ? "0.5":"1";
+}
+
+/* WHATSAPP CHECKOUT */
+function checkoutWhatsApp(){
+  if(cart.length===0) return;
+
+  const orderID = "DF-" + Date.now();
+  let msg=`Hello, I want to order.%0AOrder Ref: ${orderID}%0A%0A`;
+  let subtotal=0;
+
+  cart.forEach((i,n)=>{
+    const t=i.price*i.qty;
+    subtotal+=t;
+    msg+=`${n+1}. ${i.name} (x${i.qty}) – ₦${t}%0A`;
+  });
+
+  const total=subtotal+DELIVERY_FEE;
+  msg+=`%0ASubtotal: ₦${subtotal}`;
+  msg+=`%0ADelivery: ₦${DELIVERY_FEE}`;
+  msg+=`%0ATOTAL: ₦${total}`;
+
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`,"_blank");
+  clearCart();
+  closeCart();
+}
+
+window.onload=()=>{
+  loadCart();
+  toggleCheckout();
+};
+</script>
+
+</body>
+</html>
