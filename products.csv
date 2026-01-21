@@ -1,8 +1,9 @@
 ProductID,ProductName,Category,Brand,Price,Stock,ImageURL,DiscountPrice
-CA001,Wireless Mouse,computer,Logitech,8500,15,DF PLUS 12V CHARGER.jpg,7000
-CA002,USB Keyboard,computer,HP,12000,10,https://via.placeholder.com/300,
-PA001,Fast Charging Cable,phone,Baseus,4500,25,https://via.placeholder.com/300,3800
-PA002,Power Bank 20000mAh,phone,Oraimo,35000,8,https://via.placeholder.com/300,0
+CA001,Wireless Mouse,computer,Logitech,8500,15,https://drive.google.com/uc?export=download&id=1UTRty13assgl3wHHU1ZN1NCRomBJCBCA,7000
+CA002,USB Keyboard,computer,HP,12000,10,https://drive.google.com/uc?export=download&id=1UTRty13assgl3wHHU1ZN1NCRomBJCBCA,
+PA001,Fast Charging Cable,phone,Baseus,4500,25,https://drive.google.com/uc?export=download&id=1UTRty13assgl3wHHU1ZN1NCRomBJCBCA,3800
+PA002,Power Bank 20000mAh,phone,Oraimo,35000,8,https://drive.google.com/uc?export=download&id=1UTRty13assgl3wHHU1ZN1NCRomBJCBCA,0
+
 
 
 
