@@ -162,9 +162,26 @@ header { background:#0f172a; color:#fff; padding:1rem; text-align:center; }
 <header>
   <h2>DF Plus Accessories</h2>
   <p>Computer & Phone Accessories</p>
-  <marquee width="50%" height="50px" behavior="alternate" bgcolor="#020302" onmouseover="this.stop();" onmouseout="this.start();">
- please take delivery fee may change if your location is outside our delivery area
-</marquee>
+ <head>
+        <title>Example of a blinking text using CSS within a marquee</title>
+        <style>
+            .blink {
+                animation: blinker 1.5s linear infinite;
+                color: red;
+                font-family: sans-serif;
+            }
+
+            @keyframes blinker {
+                50% {
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <marquee class="blink">FREE DELIVERY WITHIN THE CAMPUS AND TAKE NOTE PAYMENT ON DELIVERY.</marquee>
+    </body> 
 </header>
 
 <div class="controls">
@@ -303,6 +320,7 @@ function checkoutWhatsApp(){
 
 </body>
 </html>
+
 
 
 
